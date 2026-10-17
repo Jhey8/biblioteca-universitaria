@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Libros - Biblioteca Universitaria</title>
+
+  <!-- Bootstrap 5 CDN -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  >
+</head>
+
+<body class="bg-light">
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-7">
+
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📚 Biblioteca Universitaria</h4>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title mb-4">Registro de Libros</h5>
+
+            <!-- Alerta de éxito (oculta por defecto) -->
+            <div id="alerta-exito" class="alert alert-success d-none" role="alert">
+              ✅ ¡Libro registrado correctamente!
+            </div>
+
+            <form id="form-libros" novalidate>
+
+              <!-- Nombre del libro -->
+              <div class="mb-3">
+                <label for="nombre" class="form-label fw-semibold">
+                  Nombre del libro <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nombre"
+                  placeholder="Ej: Cien años de soledad"
+                >
+                <div class="invalid-feedback">
+                  El nombre del libro es obligatorio.
+                </div>
+              </div>
+
+              <!-- Autores -->
+              <div class="mb-3">
+                <label for="autores" class="form-label fw-semibold">
+                  Autor/es <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="autores"
+                  placeholder="Ej: Gabriel García Márquez"
+                >
+                <div class="invalid-feedback">
+                  El campo de autores es obligatorio.
+                </div>
+              </div>
+
+              <!-- Código ISBN -->
+              <div class="mb-4">
+                <label for="isbn" class="form-label fw-semibold">
+                  Código ISBN <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="isbn"
+                  placeholder="Ej: 978-3-16-148410-0"
+                >
+                <div class="invalid-feedback">
+                  El código ISBN es obligatorio.
+                </div>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                  Registrar libro
+                </button>
+                <button type="button" id="btn-limpiar" class="btn btn-outline-secondary">
+                  Limpiar
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmMBODH+iuHBOKoEoOILkAqakVhE"
+    crossorigin="anonymous"
+  ></script>
+
+  <script>
+    const form = document.getElementById("form-libros");
+    const alertaExito = document.getElementById("alerta-exito");
+    const btnLimpiar = document.getElementById("btn-limpiar");
+
+    const campos = [
+      { id: "nombre",  label: "nombre del libro" },
+      { id: "autores", label: "autores"           },
+      { id: "isbn",    label: "código ISBN"       },
+    ];
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      alertaExito.classList.add("d-none");
+
+      let valido = true;
+
+      // Validar cada campo
+      campos.forEach(({ id }) => {
+        const input = document.getElementById(id);
+        const valor = input.value.trim();
+
+        if (!valor) {
+          input.classList.add("is-invalid");
+          input.classList.remove("is-valid");
+          valido = false;
+        } else {
+          input.classList.remove("is-invalid");
+          input.classList.add("is-valid");
+        }
+      });
+
+      if (valido) {
+        alertaExito.classList.remove("d-none");
+        form.reset();
+        // Quitar clases de validación visual tras el reset
+        campos.forEach(({ id }) => {
+          document.getElementById(id).classList.remove("is-valid");
+        });
+      }
+    });
+
+    // Limpiar formulario y estados de validación
+    btnLimpiar.addEventListener("click", function () {
+      form.reset();
+      alertaExito.classList.add("d-none");
+      campos.forEach(({ id }) => {
+        const input = document.getElementById(id);
+        input.classList.remove("is-invalid", "is-valid");
+      });
+    });
+
+    // Limpiar error al empezar a escribir
+    campos.forEach(({ id }) => {
+      document.getElementById(id).addEventListener("input", function () {
+        if (this.value.trim()) {
+          this.classList.remove("is-invalid");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
