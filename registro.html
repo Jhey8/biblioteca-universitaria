@@ -10,29 +10,140 @@
   <h1>Biblioteca Universitaria</h1>
   <h2>Registro de usuarios</h2>
 
-  <form id="formulario">
-    <label for="nombre">Nombre:</label>
-    <input id="nombre" type="text" required>
+  <form id="formulario" novalidate>
+    <p>
+      <label for="nombre">Nombre:</label>
+      <input id="nombre" type="text" required>
+      <span id="error-nombre"></span>
+    </p>
 
-    <label for="correo">Correo:</label>
-    <input id="correo" type="email" required>
+    <p>
+      <label for="correo">Correo:</label>
+      <input id="correo" type="email" required>
+      <span id="error-correo"></span>
+    </p>
 
     <button type="submit">Registrar</button>
   </form>
 
   <p id="resultado"></p>
 
+  <h2>Registro de préstamos</h2>
+
+  <form id="formulario-prestamo" novalidate>
+    <p>
+      <label for="usuario-prestamo">Nombre del usuario:</label>
+      <input id="usuario-prestamo" type="text" required>
+      <span id="error-usuario-prestamo"></span>
+    </p>
+
+    <p>
+      <label for="fecha-prestamo">Fecha de préstamo:</label>
+      <input id="fecha-prestamo" type="date" required>
+      <span id="error-fecha-prestamo"></span>
+    </p>
+
+    <p>
+      <label for="libro-prestamo">Libro prestado:</label>
+      <input id="libro-prestamo" type="text" required>
+      <span id="error-libro-prestamo"></span>
+    </p>
+
+    <button type="submit">Registrar préstamo</button>
+  </form>
+
+  <p id="resultado-prestamo"></p>
+
   <script>
     const formulario = document.getElementById("formulario");
+    const campoNombre = document.getElementById("nombre");
+    const campoCorreo = document.getElementById("correo");
+    const errorNombre = document.getElementById("error-nombre");
+    const errorCorreo = document.getElementById("error-correo");
+    const resultado = document.getElementById("resultado");
+
+    const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     formulario.addEventListener("submit", function (evento) {
       evento.preventDefault();
 
-      const nombre = document.getElementById("nombre").value;
-      document.getElementById("resultado").textContent =
-        "Registro validado para: " + nombre;
+      const nombre = campoNombre.value.trim();
+      const correo = campoCorreo.value.trim();
+      let valido = true;
+
+      errorNombre.textContent = "";
+      errorCorreo.textContent = "";
+      resultado.textContent = "";
+
+      if (nombre === "") {
+        errorNombre.textContent = "El nombre es obligatorio.";
+        valido = false;
+      }
+
+      if (correo === "") {
+        errorCorreo.textContent = "El correo es obligatorio.";
+        valido = false;
+      } else if (!formatoCorreo.test(correo)) {
+        errorCorreo.textContent = "El formato del correo no es válido.";
+        valido = false;
+      }
+
+      if (valido) {
+        resultado.textContent = "Registro exitoso: " + nombre + " (" + correo + ")";
+        formulario.reset();
+      }
+    });
+
+    // Registro de préstamos
+    const formularioPrestamo = document.getElementById("formulario-prestamo");
+    const campoUsuario = document.getElementById("usuario-prestamo");
+    const campoFecha = document.getElementById("fecha-prestamo");
+    const campoLibro = document.getElementById("libro-prestamo");
+    const errorUsuario = document.getElementById("error-usuario-prestamo");
+    const errorFecha = document.getElementById("error-fecha-prestamo");
+    const errorLibro = document.getElementById("error-libro-prestamo");
+    const resultadoPrestamo = document.getElementById("resultado-prestamo");
+
+    formularioPrestamo.addEventListener("submit", function (evento) {
+      evento.preventDefault();
+
+      const usuario = campoUsuario.value.trim();
+      const fecha = campoFecha.value;
+      const libro = campoLibro.value.trim();
+      const camposVacios = [];
+
+      errorUsuario.textContent = "";
+      errorFecha.textContent = "";
+      errorLibro.textContent = "";
+      resultadoPrestamo.textContent = "";
+
+      if (usuario === "") {
+        errorUsuario.textContent = "El nombre del usuario es obligatorio.";
+        camposVacios.push("Nombre del usuario");
+      }
+
+      if (fecha === "") {
+        errorFecha.textContent = "La fecha de préstamo es obligatoria.";
+        camposVacios.push("Fecha de préstamo");
+      }
+
+      if (libro === "") {
+        errorLibro.textContent = "El libro prestado es obligatorio.";
+        camposVacios.push("Libro prestado");
+      }
+
+      if (camposVacios.length > 0) {
+        alert("No se puede registrar el préstamo. Completa los siguientes campos:\n- " + camposVacios.join("\n- "));
+        return;
+      }
+
+      const mensaje = "Préstamo registrado correctamente: \"" + libro + "\" a " + usuario + " el " + fecha + ".";
+      resultadoPrestamo.textContent = mensaje;
+      alert(mensaje);
+      formularioPrestamo.reset();
     });
   </script>
 </body>
 
 </html>
+
